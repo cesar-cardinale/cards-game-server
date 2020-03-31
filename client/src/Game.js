@@ -3,47 +3,68 @@ import io from 'socket.io-client';
 const socket = io(config[process.env.NODE_ENV].endpoint);
 
 class Game {
-    maxPoints;
-    isPrivate;
-    ident;
-    player1;
-    player2;
-    player3;
-    player4;
-    team = [["", ""], ["", ""]];
-    isTeamSet = 0;
+  maxPoints;
+  isPrivate;
+  ident;
+  player1 = {
+    username: '',
+    IP: '',
+    choice: ''
+  };
+  player2 = {
+    username: '',
+    IP: '',
+    choice: ''
+  };
+  player3 = {
+    username: '',
+    IP: '',
+    choice: ''
+  };
+  player4 = {
+    username: '',
+    IP: '',
+    choice: ''
+  };
+  team = {
+    T1P1: '',
+    T1P2: '',
+    T2P1: '',
+    T2P2: ''
+  };
+  isTeamSet = false;
 
-    constructor(ident, isPrivate, maxPoints) {
-        this.ident = ident;
-        this.isPrivate = isPrivate;
-        this.maxPoints = maxPoints;
-    }
-    send(){
-        socket.emit('add-game', this );
-    }
-    populate(cb){
-        socket.emit('get-game', this.ident);
-        socket.on('update-game', (game) => cb(Object.assign(new Game(), game)));
-    }
-    onUpdate(cb){
-        socket.on('update-game', (game) => cb(Object.assign(new Game(), game)));
-    }
-    addMate(username){
-        socket.emit('add-mate', this.ident, username);
-    }
-    getCurrentPlayer(cb){
-        socket.emit('current-player', this.ident);
-        socket.on('current-player', (player) => cb(player) );
-    }
-    setChoice(cb, choice, username){
-        socket.emit('set-choice', this.ident, username, choice);
-        socket.on('update-game', (game) => cb(Object.assign(new Game(), game)));
-    }
+  constructor(ident, isPrivate, maxPoints) {
+    this.ident = ident;
+    this.isPrivate = isPrivate;
+    this.maxPoints = maxPoints;
+  }
+  send(){
+    socket.emit('add-game', this );
+  }
+  populate(cb){
+    socket.emit('get-game', this.ident);
+    socket.on('update-game', (game) => cb(Object.assign(new Game(), game)));
+  }
+  onUpdate(cb){
+    socket.on('update-game', (game) => cb(Object.assign(new Game(), game)));
+  }
+  addMate(username){
+    socket.emit('add-mate', this.ident, username);
+  }
+  getCurrentPlayer(cb){
+    socket.emit('current-player', this.ident);
+    socket.on('current-player', (player) => cb(player) );
+  }
+  setChoice(cb, choice, username){
+    socket.emit('set-choice', this.ident, username, choice);
+    socket.on('update-game', (game) => cb(Object.assign(new Game(), game)));
+  }
 
 
-    static getGameByIdent(ident, cb) {
-        socket.emit('getGame', ident);
-        socket.on('game', (game) => cb(Object.assign(new Game(), game)) );
-    }
+  static getGameByIdent(ident, cb) {
+    socket.emit('getGame', ident);
+    socket.on('game', (game) => cb(Object.assign(new Game(), game)) );
+  }
 }
 export { Game };

@@ -252,16 +252,11 @@ class ContreeUsername extends React.Component {
     this.state.game.getCurrentPlayer(this.handleCurrentPlayer);
   }
   handleLiveGame(game){
-    game.player1 = JSON.parse(game.player1);
-    game.player2 = JSON.parse(game.player2);
-    game.player3 = JSON.parse(game.player3);
-    game.player4 = JSON.parse(game.player4);
-    game.team = JSON.parse(game.team);
-    this.setState((state, props) => ({game: Object.assign(state.game, game)}) );
-    if(this.state.game.player1 && this.state.game.player2 && this.state.game.player3 && this.state.game.player4){
+    this.setState((state) => ({game: Object.assign(state.game, game)}) );
+    if(this.state.game.player1.username && this.state.game.player2.username && this.state.game.player3.username && this.state.game.player4.username){
       document.getElementById('buttonCapacity').classList.add('show');
       document.getElementById('form').style.display = 'none';
-      document.querySelector('h3').remove();
+      document.querySelector('h3').style.display = 'none';
     }
     if(this.state.game.ident !== this.state.ident) this.props.history.replace('/Contree');
   }
@@ -347,14 +342,8 @@ class ContreePlay extends React.Component {
     document.querySelector('.logo img').setAttribute("src", logoWhite);
   }
   handleLiveGame(game){
-    if(game !== 'no_data'){
-      game.player1 = JSON.parse(game.player1);
-      game.player2 = JSON.parse(game.player2);
-      game.player3 = JSON.parse(game.player3);
-      game.player4 = JSON.parse(game.player4);
-      game.team = JSON.parse(game.team);
-      this.setState((state, props) => ({ game: game }));
-    }
+    this.setState((state) => ({game: Object.assign(state.game, game)}) );
+    if(this.state.game.ident !== this.state.ident) this.props.history.replace('/Contree');
   }
   handleCurrentPlayer(player){
     this.setState((state, props) => ({ currentPlayer: player }));
@@ -362,7 +351,7 @@ class ContreePlay extends React.Component {
     if(this.state.currentPlayer === undefined) this.props.history.replace('/Contree/Join/'+this.state.game.ident);
   }
   checkIfFull(){
-    if(this.state.game.player1 && this.state.game.player2 && this.state.game.player3 && this.state.game.player4 && !this.state.game.isTeamSet){
+    if(this.state.game.player1.username && this.state.game.player2.username && this.state.game.player3.username && this.state.game.player4.username && !this.state.game.isTeamSet){
       document.querySelector('#wait h2').textContent = 'Choix des équipes';
       if(!this.state.currentPlayer.choice)  document.querySelector('#choice').style.display = 'block';
     }
@@ -372,45 +361,50 @@ class ContreePlay extends React.Component {
     if(this.state.currentPlayer !== null && this.state.currentPlayer !== undefined && place === 'me'){
       return( this.state.currentPlayer );
     }
-    let selectedUser;
     if(this.state.currentPlayer !== null && this.state.currentPlayer !== undefined){
+      let selectedUser;
       let myTeam = 0;
-      let currentIndexUser;
+      let myPlayerPlace = 0;
       const username = this.state.currentPlayer.username;
-      currentIndexUser = team[0].indexOf(username);
-      if(currentIndexUser > -1){
+      if(this.state.game.team.T1P1 && this.state.game.team.T1P1 === username){
         myTeam = 1;
-        selectedUser = (currentIndexUser === 1)? team[0][0] : team[0][1];
-      }
-      if(currentIndexUser < 0){
-        currentIndexUser = team[1].indexOf(username);
-        if(currentIndexUser > -1){
-          myTeam = 2;
-          selectedUser = (currentIndexUser === 1)? team[1][0] : team[1][1];
-        }
+        myPlayerPlace = 1;
+        selectedUser = this.state.game.team.T1P2;
+      } else if(this.state.game.team.T1P2 && this.state.game.team.T1P2 === username){
+        myTeam = 1;
+        myPlayerPlace = 2;
+        selectedUser = this.state.game.team.T1P1;
+      } else if(this.state.game.team.T2P1 && this.state.game.team.T2P1 === username){
+        myTeam = 2;
+        myPlayerPlace = 1;
+        selectedUser = this.state.game.team.T2P2;
+      } else if(this.state.game.team.T2P2 && this.state.game.team.T2P2 === username){
+        myTeam = 2;
+        myPlayerPlace = 2;
+        selectedUser = this.state.game.team.T2P1;
       }
       if(selectedUser && place === 'mate'){
         return this.player(selectedUser);
       }
       if(myTeam !== 2 && (place === 'first' || place === 'second') ){
-        if(team[1][0] && team[1][0] !== username && place === 'first') return this.player(team[1][0]);
-        if(team[1][1] && team[1][1] !== username && place === 'second') return this.player(team[1][1]);
+        if(this.state.game.T2P1 && this.state.game.T2P1 !== username && place === 'first') return this.player(this.state.game.T2P1);
+        if(this.state.game.T2P2 && this.state.game.T2P2 !== username && place === 'second') return this.player(this.state.game.T2P2);
       } else if(myTeam !== 1 && (place === 'first' || place === 'second') ){
-        if(team[0][0] && team[0][0] !== username && place === 'first') return this.player(team[0][0]);
-        if(team[0][1] && team[0][1] !== username && place === 'second') return this.player(team[0][1]);
+        if(this.state.game.T1P1 && this.state.game.T1P1 !== username && place === 'first') return this.player(this.state.game.T1P1);
+        if(this.state.game.T1P2 && this.state.game.T1P2 !== username && place === 'second') return this.player(this.state.game.T1P2);
       }
     }
     return( {username: "", IP: null, choice: null} );
   }
 
   player(username){
-    if(this.state.game.player1 && this.state.game.player1.username === username){
+    if(this.state.game.player1.username && this.state.game.player1.username === username){
       return this.state.game.player1;
-    } else if(this.state.game.player2 && this.state.game.player2.username === username){
+    } else if(this.state.game.player2.username && this.state.game.player2.username === username){
       return this.state.game.player2;
-    } else if(this.state.game.player3 && this.state.game.player3.username === username){
+    } else if(this.state.game.player3.username && this.state.game.player3.username === username){
       return this.state.game.player3;
-    } else if(this.state.game.player4 && this.state.game.player4.username === username){
+    } else if(this.state.game.player4.username && this.state.game.player4.username === username){
       return this.state.game.player4;
     }
   }

@@ -171,6 +171,9 @@ a.back div:hover{
 .box.contree.username #buttonCapacity{
   display: none;
 }
+.box.contree.username #buttonCapacity.show{
+  display: block;
+}
 .box.contree.username #buttonCapacity .start{
   background-color: #D80351;
 }

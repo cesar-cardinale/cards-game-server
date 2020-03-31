@@ -4,12 +4,32 @@ const gameSchema = new mongoose.Schema({
   maxPoints:  Number,
   isPrivate: Boolean,
   ident: String,
-}, {
-  player1: String,
-  player2: String,
-  player3: String,
-  player4: String,
-  team: String,
+  player1: {
+    username: String,
+    IP: String,
+    choice: String,
+  },
+  player2: {
+    username: String,
+    IP: String,
+    choice: String,
+  },
+  player3: {
+    username: String,
+    IP: String,
+    choice: String,
+  },
+  player4: {
+    username: String,
+    IP: String,
+    choice: String,
+  },
+  team: {
+      T1P1: String,
+      T1P2: String,
+      T2P1: String,
+      T2P2: String,
+    },
   isTeamSet: Boolean,
 });
 
