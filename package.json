@@ -1,9 +1,9 @@
 {
-  "name": "speedchatapp",
+  "name": "cards-game-server",
   "version": "1.0.0",
-  "description": "A simple and quick tutorial to implement a chat using the MERN stack.",
+  "description": "A simple cards game server made with Socket.io, Express and React.",
   "main": "index.js",
-  "author": "Armel Pingault<armel.pingault@gmail.com>",
+  "author": "César Cardinale<contact@cesarcardinale.fr>",
   "contributors": [],
   "scripts": {
     "dev": "concurrently --kill-others \"heroku local\" \"npm run start --prefix ./client\"",
@@ -12,13 +12,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/armelpingault/speedchatapp.git"
+    "url": "git+https://github.com/cesar-cardinale/cards-game-server.git"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/armelpingault/speedchatapp/issues"
+    "url": "https://github.com/cesar-cardinale/cards-game-server/issues"
   },
-  "homepage": "https://github.com/armelpingault/speedchatapp#readme",
+  "homepage": "https://github.com/cesar-cardinale/cards-game-server#readme",
   "devDependencies": {
     "concurrently": "^5.0.2"
   }

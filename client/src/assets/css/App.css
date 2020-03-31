@@ -1,0 +1,315 @@
+@import url('https://fonts.googleapis.com/css?family=Lato:400,700,900&display=swap');
+html{
+  background-color: #EEEEEE;
+  transition: all 0.6s ease-out;
+}
+*{
+  box-sizing: border-box;
+  font-family: 'Lato', sans-serif;
+}
+*:focus {
+  outline: none;
+}
+a{
+  text-decoration: none;
+}
+.box{
+  margin: 25vh auto 0px;
+  background-color: #3F3F3F;
+  box-shadow: 0 5px 15px 0 rgba(62, 57, 107, 0.2);
+  padding: 10px 15px;
+  border-radius: 8px;
+  box-sizing: border-box;
+  color: #FFF;
+  position: relative;
+}
+.box .logo{
+  width: 92%;
+  position: absolute;
+  margin: -25% auto 0;
+}
+.box .logo img{
+  width: 100%;
+}
+.box .button{
+  padding: 8px 15px;
+  border-radius: 6px;
+  box-sizing: border-box;
+  border: none;
+  border-bottom: 2px solid rgba(0,0,0,0.2);
+  width: 100%;
+  margin: 10px auto;
+  color: #FFF;
+  font-size: 17px;
+  text-transform: uppercase;
+  font-weight: 900;
+  cursor: pointer;
+  text-align: center;
+}
+a.back div{
+  color: darkgray;
+  font-size: 14px;
+  margin-bottom: 10px;
+  position: absolute;
+  margin-top: -49px;
+}
+a.back div:hover{
+  color: #9a9a9a;
+}
+.sep{
+  width: 100%;
+  border-bottom: 1.4px solid darkgray;
+  margin-bottom: 10px;
+}
+
+
+
+
+
+
+
+
+
+.box.menu{
+  width: 30%;
+}
+.box.menu ul{
+  list-style: none;
+  padding: 0px;
+  margin: 0px;
+  text-align: center;
+}
+.box.menu .button.game{
+  background-color: #D80351;
+}
+.box.menu .button.game:hover{
+  background-color: #c9034e;
+}
+@media (max-width: 992px){
+  .box.menu{
+    width: 90%;
+  }
+}
+
+
+
+
+
+
+.box.contree{
+  width: 30%;
+}
+.box.contree h2, .box.contree h3{
+  text-align: center;
+}
+.box.contree h2{
+  margin-bottom: 10px;
+  margin-top: 0;
+  font-size: 35px;
+}
+.box.contree h3{
+  font-weight: normal;
+  font-size: 18px;
+  margin-top: 5px;
+}
+.box.contree a div.create, .box.menu .game{
+  background-color: #00A3EE;
+}
+.box.contree a div.join{
+  background-color: #F5D908;
+}
+.box.contree a div.create:hover, .box.menu .game:hover{
+  background-color: #009cdf;
+}
+.box.contree a div.join:hover{
+  background-color: #e6ca08;
+}
+
+.box.contree.start form .private{
+  font-size: 13px;
+  font-style: italic;
+  color: darkgray;
+}
+.box.contree.start form input[type='number']{
+  padding: 8px 5px;
+  width: 80px;
+  margin-left: 10px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid rgba(0,0,0,0.2);
+}
+.box.contree form input[type='submit']{
+  background-color: #D80351;
+}
+.box.contree form input[type='submit']:hover{
+  background-color: #c9034e;
+}
+.box.contree form input[type='submit']:disabled{
+  cursor: not-allowed;
+  background-color: darkgray;
+}
+.box.contree.username form input[type='text']{
+  padding: 8px 5px;
+  width: 100%;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid rgba(0,0,0,0.2);
+  text-align: center;
+}
+.box.contree.username form #used{
+  text-align: center;
+  display: none;
+  color: crimson;
+  margin-top: 6px;
+}
+.box.contree.username form #used span{
+  font-weight: bold;
+}
+.box.contree.username form #used.show{
+  display: block;
+}
+.box.contree.username #buttonCapacity{
+  display: none;
+}
+.box.contree.username #buttonCapacity .start{
+  background-color: #D80351;
+}
+.box.contree.play{
+  width: 95%;
+  margin-top: 12vh;
+  background-color: #FFFFFF;
+  color: #000;
+}
+.box.contree.play .logo{
+  width: 100%;
+  margin: -100px 0 0 0;
+}
+.box.contree.play .logo div{
+  width: 25%;
+  margin: 0 auto;
+}
+.box.contree.play h2{
+  font-size: 25px;
+  margin-top: 0px;
+}
+.box.contree.play a.back div{
+  margin-top: -44px;
+}
+.box.contree.play .shareInput{
+  position: absolute;
+  right: 15px;
+  margin-top: -52px;
+}
+.box.contree.play .shareInput input{
+  width: 405px;
+  border-radius: 5px;
+  border: 1px solid darkgray;
+  text-align: center;
+  padding: 5px 5px;
+  font-size: 13px;
+}
+
+/* En attente des joueurs */
+.box.contree.play #wait{
+  margin: 0 auto;
+  width: 100%;
+}
+.box.contree.play #wait *{
+  transition: all 0.6s ease-out;
+}
+.box.contree.play #wait h2{
+
+}
+.box.contree.play #wait .players{
+  display: flex;
+  flex-wrap: wrap;
+}
+.box.contree.play #wait .players .player{
+  flex: 1 0 20%;
+  text-align: center;
+  box-shadow: 0 5px 15px 0 rgba(62, 57, 107, 0.2);
+  padding: 10px 15px;
+  margin: 10px;
+  border-radius: 8px;
+  background-color: #3F3F3F;
+  color: #FFF;
+  font-weight: bold;
+  font-size: 20px;
+}
+.box.contree.play #wait .players .player .avatar{
+  height: 120px;
+  padding: 0 20px 10px 20px;
+}
+.box.contree.play #wait .players .player .avatar img{
+  height: 100%;
+  border-radius: 100%;
+}
+.box.contree.play #wait .players .player .avatar img.load{
+  height: 50%;
+  margin-top: 12%;
+}
+.box.contree.play #wait .players .player p{
+  color: #a3a3a3;
+  font-size: 15px;
+  font-weight: lighter;
+  margin: 0 0 5px 0;
+}
+.box.contree.play #wait .players .player .choose{
+  background-color: #c9034e;
+  font-size: 14px;
+  text-transform: uppercase;
+  text-align: center;
+  border-radius: 15px;
+  padding: 8px 16px;
+  margin-top: 5px;
+  display: inline;
+}
+.box.contree.play #choice{
+  width: 100%;
+  display: none;
+}
+.box.contree.play #choice .button.choice{
+  background-color: #D80351;
+  width: 49.5%;
+  margin: 0;
+  display: inline-block;
+}
+.box.contree.play #choice .button.choice.first{
+  margin-right: 1%;
+}
+.box.contree.play #choice .button.choice:hover{
+  background-color: #c9034e;
+}
+
+
+@media (max-width: 992px){
+  .box.contree{
+    width: 90%;
+  }
+  .box.contree.play .shareInput{
+    position: initial;
+    width: 100%;
+    text-align: center;
+    border-bottom: 1.4px solid darkgray;
+    margin: 0 auto 10px;
+    padding: 0 0 15px 0;
+
+  }
+  .box.contree.play .shareInput input {
+    width: 100%;
+    margin-top: 5px;
+  }
+  .box.contree.play #wait .players{
+    display: block;
+  }
+  .box.contree.play #wait .players .player{
+    width: 100%;
+    margin: 5px 0;
+  }
+}
+
+
+
+.box.belote{
+  width: 80%;
+}

@@ -7,6 +7,8 @@ const io = require('socket.io')(http);
 const uri = process.env.MONGODB_URI || `mongodb://localhost/cards-game-server`;
 const port = process.env.PORT || 5000;
 
+const Game = require('./Game');
+
 const Message = require('./Message');
 const mongoose = require('mongoose');
 
@@ -42,6 +44,18 @@ io.on('connection', (socket) => {
 
     // Notify all other users about a new message.
     socket.broadcast.emit('push', msg);
+  });
+
+  socket.on('add-game', (gameReceived) => {
+    const game = new Game({
+      maxPoints: gameReceived.maxPoints,
+      isPrivate: gameReceived.isPrivate,
+      ident: gameReceived.ident,
+    });
+    game.save((err) => {
+      if (err) return console.error(err);
+    });
+    console.log('[!]#'+game.ident+' added');
   });
 });
 
