@@ -4,12 +4,11 @@ const http = require('http').Server(app);
 const path = require('path');
 const io = require('socket.io')(http);
 
-const uri = process.env.MONGODB_URI || `mongodb://localhost/cards-game-server`;
+const uri = "mongodb+srv://cesar:cards2020@cluster0-931bs.mongodb.net/test?retryWrites=true&w=majority";
 const port = process.env.PORT || 5000;
 
 const Game = require('./Game');
 
-const Message = require('./Message');
 const mongoose = require('mongoose');
 
 mongoose.connect(uri, {
