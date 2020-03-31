@@ -61,6 +61,17 @@ class Game {
     socket.on('update-game', (game) => cb(Object.assign(new Game(), game)));
   }
 
+  getChoice(){
+    return (this.mostRecurring([this.player1.choice, this.player2.choice, this.player3.choice, this.player4.choice]) === 'king')? 'Tirage des rois' : 'Choix de l\'équipier';
+  }
+
+  mostRecurring(arr){
+    return arr.sort((a,b) =>
+      arr.filter(v => v===a).length
+      - arr.filter(v => v===b).length
+    ).pop();
+  }
+
 
   static getGameByIdent(ident, cb) {
     socket.emit('getGame', ident);

@@ -20,32 +20,6 @@ mongoose.connect(uri, {
 app.use(express.static(path.join(__dirname, '..', 'client', 'build')));
 
 io.on('connection', (client) => {
-
-  // Get the last 10 messages from the database.
-  Message.find().sort({createdAt: -1}).limit(10).exec((err, messages) => {
-    if (err) return console.error(err);
-
-    // Send the last messages to the user.
-    client.emit('init', messages);
-  });
-
-  // Listen to connected users for a new message.
-  client.on('message', (msg) => {
-    // Create a message with the content and the name of the user.
-    const message = new Message({
-      content: msg.content,
-      name: msg.name,
-    });
-
-    // Save the message to the database.
-    message.save((err) => {
-      if (err) return console.error(err);
-    });
-
-    // Notify all other users about a new message.
-    client.broadcast.emit('push', msg);
-  });
-
   client.on('add-game', (gameReceived) => {
     const game = new Game();
     game.maxPoints = gameReceived.maxPoints;
@@ -86,11 +60,9 @@ io.on('connection', (client) => {
   });
 
   client.on('add-mate', (ident, username) => {
-    console.log('[!]#'+ident+' add mate called');
     const clientIp = client.request.connection.remoteAddress;
     Game.findOne({ ident: ident }).exec((err, game) => {
       if (err || !game) return console.error(err);
-      console.log(game);
       if(!game.player1.username){
         game.player1.username = username;
         game.player1.IP = clientIp;
@@ -114,9 +86,33 @@ io.on('connection', (client) => {
       }
       game.save((err) => {
         if (err) return console.error(err);
+        io.emit('update-game', game);
         console.log('[!]#'+game.ident+' updated');
       });
-      io.emit('update-game', game);
+    });
+  });
+
+  client.on('set-choice', (ident, username, choice) => {
+    Game.findOne({ ident: ident }).exec((err, game) => {
+      if (err || !game) return console.error(err);
+      if(game.player1.username && game.player1.username === username){
+        game.player1.choice = choice;
+        console.log('[!]#'+ident,'[UPDATE P1]',username);
+      } else if(game.player2.username && game.player2.username === username){
+        game.player2.choice = choice;
+        console.log('[!]#'+ident,'[UPDATE P2]',username);
+      } else if(game.player3.username && game.player3.username === username){
+        game.player3.choice = choice;
+        console.log('[!]#'+ident,'[UPDATE P3]',username);
+      } else if(game.player4.username && game.player4.username === username){
+        game.player4.choice = choice;
+        console.log('[!]#'+ident,'[UPDATE P4]',username);
+      }
+      game.save((err) => {
+        if (err) return console.error(err);
+        io.emit('update-game', game);
+        console.log('[!]#'+game.ident+' updated');
+      });
     });
   });
 });

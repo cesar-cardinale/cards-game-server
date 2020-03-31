@@ -23,111 +23,6 @@ class App extends React.Component {
     );
   }
 }
-{ /*
-class App_EXAMPLE extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      chat: [],
-      content: '',
-      name: '',
-    };
-  }
-
-  componentDidMount() {
-    this.socket = io(config[process.env.NODE_ENV].endpoint);
-
-    // Load the last 10 messages in the window.
-    this.socket.on('init', (msg) => {
-      this.setState((state) => ({
-        chat: [...state.chat, ...msg.reverse()],
-      }), this.scrollToBottom);
-    });
-
-    // Update the chat if a new message is broadcasted.
-    this.socket.on('push', (msg) => {
-      this.setState((state) => ({
-        chat: [...state.chat, msg],
-      }), this.scrollToBottom);
-    });
-  }
-
-  // Save the message the user is typing in the input field.
-  handleContent(event) {
-    this.setState({
-      content: event.target.value,
-    });
-  }
-
-  //
-  handleName(event) {
-    this.setState({
-      name: event.target.value,
-    });
-  }
-
-  // When the user is posting a new message.
-  handleSubmit(event) {
-    console.log(event);
-
-    // Prevent the form to reload the current page.
-    event.preventDefault();
-
-    this.setState((state) => {
-      console.log(state);
-      console.log('this', this.socket);
-      // Send the new message to the server.
-      this.socket.emit('message', {
-        name: state.name,
-        content: state.content,
-      });
-
-      // Update the chat with the user's message and remove the current message.
-      return {
-        chat: [...state.chat, {
-          name: state.name,
-          content: state.content,
-        }],
-        content: '',
-      };
-    }, this.scrollToBottom);
-  }
-
-  // Always make sure the window is scrolled down to the last message.
-  scrollToBottom() {
-    const chat = document.getElementById('chat');
-    chat.scrollTop = chat.scrollHeight;
-  }
-
-  render() {
-    return (
-      <div className="App">
-        <Paper id="chat" elevation={3}>
-          {this.state.chat.map((el, index) => {
-            return (
-              <div key={index}>
-                <Typography variant="caption" className="name">
-                  {el.name}
-                </Typography>
-                <Typography variant="body1" className="content">
-                  {el.content}
-                </Typography>
-              </div>
-            );
-          })}
-        </Paper>
-        <BottomBar
-          content={this.state.content}
-          handleContent={this.handleContent.bind(this)}
-          handleName={this.handleName.bind(this)}
-          handleSubmit={this.handleSubmit.bind(this)}
-          name={this.state.name}
-        />
-      </div>
-    );
-  }
-} */ }
 
 class Menu extends React.Component {
   render()  {
@@ -357,30 +252,24 @@ class ContreePlay extends React.Component {
     }
   }
   getMate(place){
-    const team = this.state.game.team;
     if(this.state.currentPlayer !== null && this.state.currentPlayer !== undefined && place === 'me'){
       return( this.state.currentPlayer );
     }
     if(this.state.currentPlayer !== null && this.state.currentPlayer !== undefined){
       let selectedUser;
       let myTeam = 0;
-      let myPlayerPlace = 0;
       const username = this.state.currentPlayer.username;
       if(this.state.game.team.T1P1 && this.state.game.team.T1P1 === username){
         myTeam = 1;
-        myPlayerPlace = 1;
         selectedUser = this.state.game.team.T1P2;
       } else if(this.state.game.team.T1P2 && this.state.game.team.T1P2 === username){
         myTeam = 1;
-        myPlayerPlace = 2;
         selectedUser = this.state.game.team.T1P1;
       } else if(this.state.game.team.T2P1 && this.state.game.team.T2P1 === username){
         myTeam = 2;
-        myPlayerPlace = 1;
         selectedUser = this.state.game.team.T2P2;
       } else if(this.state.game.team.T2P2 && this.state.game.team.T2P2 === username){
         myTeam = 2;
-        myPlayerPlace = 2;
         selectedUser = this.state.game.team.T2P1;
       }
       if(selectedUser && place === 'mate'){
@@ -417,12 +306,61 @@ class ContreePlay extends React.Component {
     this.state.game.setChoice(this.handleLiveGame, 'mate', this.state.currentPlayer.username);
     document.querySelector('#choice').remove();
   }
+  watingView(){
+    if( this.state.game.isTeamSet) return '';
+      const me = this.getMate('me');
+      const mate = this.getMate('mate');
+      const adv1 = this.getMate('first');
+      const adv2 = this.getMate('second');
+      let choices = null;
+      let title = "En attente de tous les joueurs ...";
+      if(!me.choice && mate.IP && adv1.IP && adv2.IP) {
+        choices = <div id="choice"><ChoiceButton classTitle="first" event={this.chooseKing} text="Tirer les rois"/><ChoiceButton classTitle="" event={this.chooseMate} text="Choisir son équipier"/></div>;
+        title = "Choix d'attribution des équipes";
+      }
+      return (
+         <div id="wait">
+          <h2>{title}</h2>
+          <div className="players">
+            <div className="player">
+              <div className="avatar"><Avatar username={me.username}/></div>
+              <p>Joueur 1 (moi)</p>
+              {me.username}
+              <ChoiceFlag user={me}/>
+            </div>
+            <div className="player">
+              <div className="avatar"><Avatar username={mate.username}/></div>
+              <p>Joueur 2</p>
+              {mate.username}
+              <ChoiceFlag user={mate}/>
+            </div>
+            <div className="player">
+              <div className="avatar"><Avatar username={adv1.username}/></div>
+              <p>Joueur 3</p>
+              {adv1.username}
+              <ChoiceFlag user={adv1}/>
+            </div>
+            <div className="player">
+              <div className="avatar"><Avatar username={adv2.username}/></div>
+              <p>Joueur 4</p>
+              {adv2.username}
+              <ChoiceFlag user={adv2}/>
+            </div>
+          </div>
+          {choices}
+        </div>
+      );
+  }
+  choiceView(){
+    if(this.state.game.player1.choice && this.state.game.player2.choice && this.state.game.player3.choice && this.state.game.player4.choice && !this.game.isTeamSet)
+    return(
+      <div id="choice">
+        <h2>{this.state.game.getChoice()}</h2>
+      </div>
+    );
+  }
   render()  {
     console.log('JEU', this.state.game);
-    const me = this.getMate('me');
-    const mate = this.getMate('mate');
-    const adv1 = this.getMate('first');
-    const adv2 = this.getMate('second');
     return (
       <div className="box contree play">
         <Logo />
@@ -430,39 +368,8 @@ class ContreePlay extends React.Component {
         <div className="sep"/>
         <BackButton link="/Contree/Join"/>
         <InputShareLink link={`/Contree/Join/${this.state.game.ident}`} />
-        <div id="wait">
-          <h2>En attente de tous les joueurs ...</h2>
-          <div className="players">
-            <div className="player">
-              <div className="avatar"><Avatar username={me.username} /></div>
-              <p>Joueur 1 (moi)</p>
-              {me.username}
-              <ChoiceFlag user={me}/>
-            </div>
-            <div className="player">
-              <div className="avatar"><Avatar username={mate.username} /></div>
-              <p>Joueur 2</p>
-              {mate.username}
-              <ChoiceFlag user={mate}/>
-            </div>
-            <div className="player">
-              <div className="avatar"><Avatar username={adv1.username} /></div>
-              <p>Joueur 3</p>
-              {adv1.username}
-              <ChoiceFlag user={adv1}/>
-            </div>
-            <div className="player">
-              <div className="avatar"><Avatar username={adv2.username} /></div>
-              <p>Joueur 4</p>
-              {adv2.username}
-              <ChoiceFlag user={adv2}/>
-            </div>
-          </div>
-          <div id="choice">
-            <ChoiceButton classTitle="first" event={this.chooseKing} text="Tirer les rois" />
-            <ChoiceButton classTitle="" event={this.chooseMate} text="Choisir son équipier" />
-          </div>
-        </div>
+        {this.watingView()}
+        {this.choiceView()}
       </div>
     );
   }
@@ -496,15 +403,13 @@ const InputShareLink = ({ link }) => <div className="shareInput">Inviter <i clas
 
 const Avatar = ({username}) => (username)? <img alt={`Avatar de ${username}`} src={`https://avatars.dicebear.com/v2/avataaars/${username}.svg?options[mouth][]=twinkle&options[eyes][]=squint&options[background]=%23FFFFFF`} /> : <img className="load" alt="En attente" src={load} />;
 
+/**
+ * @return {null}
+ */
 function ChoiceFlag({user}){
-  if(user.choice === 'king'){
-    return <div className="choose">Veut tirer les rois</div>;
-  }
-  else if(user.choice === 'mate'){
-    return <div className="choose">Veut chosir</div>;
-  } else {
-    return "";
-  }
+  if(user.choice === 'king') return <div className="choose">Veut tirer les rois</div>;
+  else if(user.choice === 'mate') return <div className="choose">Veut chosir</div>;
+  return null;
 }
 
 export default App;

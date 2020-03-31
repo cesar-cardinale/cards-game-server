@@ -259,13 +259,13 @@ a.back div:hover{
 }
 .box.contree.play #wait .players .player .choose{
   background-color: #c9034e;
-  font-size: 14px;
+  font-size: 12px;
   text-transform: uppercase;
   text-align: center;
   border-radius: 15px;
-  padding: 8px 16px;
-  margin-top: 5px;
-  display: inline;
+  padding: 4px 10px;
+  width: fit-content;
+  margin: 5px auto 0px;
 }
 .box.contree.play #choice{
   width: 100%;
