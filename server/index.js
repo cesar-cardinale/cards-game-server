@@ -16,14 +16,6 @@ mongoose.connect(uri, {
   useNewUrlParser: true,
 });
 
-if (process.env.NODE_ENV === 'production') {
-  const publicPath = path.join(__dirname, '../client/public');
-  app.use(express.static(publicPath));
-  app.use('*', express.static(publicPath));
-}
-
-app.use(express.static(path.join(__dirname, '..', 'client', 'build')));
-
 io.on('connection', (client) => {
   client.on('add-game', (gameReceived) => {
     const game = new Game();
