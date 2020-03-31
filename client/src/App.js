@@ -13,12 +13,12 @@ class App extends React.Component {
   render() {
     return (
       <BrowserRouter>
-        <Route exact path="/" component={Menu}/>
-        <Route exact path="/Contree" component={ContreeMenu}/>
-        <Route exact path="/Contree/Start" component={ContreeStart}/>
-        <Route exact path="/Contree/Join/:ident" component={ContreeUsername}/>
-        <Route exact path="/Contree/Play/:ident" component={ContreePlay}/>
-        <Route exact path="/Belote" component={BeloteMenu}/>
+        <Route path="/" exact component={Menu}/>
+        <Route path="/Contree" exact component={ContreeMenu}/>
+        <Route path="/Contree/Start" exact component={ContreeStart}/>
+        <Route path="/Contree/Join/:ident" exact component={ContreeUsername}/>
+        <Route path="/Contree/Play/:ident" exact component={ContreePlay}/>
+        <Route path="/Belote" exact component={BeloteMenu}/>
       </BrowserRouter>
     );
   }
