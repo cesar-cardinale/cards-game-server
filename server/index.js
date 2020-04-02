@@ -4,7 +4,7 @@ const http = require('http').Server(app);
 const path = require('path');
 const io = require('socket.io')(http);
 
-const uri = "mongodb+srv://cesar:cards2020@cluster0-931bs.mongodb.net/test?retryWrites=true&w=majority";
+const uri = "mongodb://127.0.0.1:27017/test"; //"mongodb+srv://cesar:cards2020@cluster0-931bs.mongodb.net/test?retryWrites=true&w=majority";
 const port = process.env.PORT || 5000;
 
 const Game = require('./Game');
@@ -34,16 +34,19 @@ io.on('connection', (client) => {
   });
 
   client.on('get-game', (ident) => {
-    Game.findOne({ ident: ident }).exec((err, game) => {
-      if (err) return console.error(err);
-      client.emit('update-game', game);
-      console.log('[!]#'+game.ident+' called and sent');
-    });
+    Game.findOne({ ident: ident })
+      .then(game => {
+        client.emit('update-game', game);
+        console.log('[!]#'+ident+' called and sent');
+      })
+      .catch(err => {
+        console.error(err)
+      });
   });
 
   client.on('current-player', (ident) => {
     const clientIp = client.request.connection.remoteAddress;
-    Game.findOne({ ident: ident }).exec((err, game) => {
+     Game.findOne({ ident: ident }).exec((err, game) => {
       if (err) return console.error(err);
 
       let currentPlayer = null;
@@ -56,7 +59,7 @@ io.on('connection', (client) => {
       } else if(game.player4.username && game.player4.IP === clientIp){
         currentPlayer = game.player4;
       }
-      console.log('[!]#'+game.ident,'Current user asked //', (currentPlayer)? currentPlayer.username : currentPlayer );
+      console.log('[!]#'+ident,'Current user asked //', (currentPlayer)? currentPlayer.username : currentPlayer );
       client.emit('current-player', currentPlayer);
     });
   });
@@ -95,7 +98,7 @@ io.on('connection', (client) => {
         if (err) return console.error(err);
         io.emit('update-game', game);
         client.emit('current-player', currentPlayer);
-        console.log('[!]#'+game.ident+' updated and sent & currentuser sent');
+        console.log('[!]#'+ident+' updated and sent & currentuser sent');
       });
     });
   });
@@ -122,7 +125,7 @@ io.on('connection', (client) => {
         console.log('[!]#'+ident,'[UPDATE P4]',username);
       }
 
-      if(!game.isTeamSet && [game.player1.choice, game.player2.choice, game.player3.choice, game.player4.choice].filter( (el) => el !== undefined ).length === 4) {
+     if(!game.isTeamSet && [game.player1.choice, game.player2.choice, game.player3.choice, game.player4.choice].filter( (el) => el !== undefined ).length === 1) {
         // Si tous les choix sont faits, on initialise le paquet de base du jeu
         for (let i = 0; i < suits.length; i++) {
           for (let x = 0; x < values.length; x++) {
@@ -131,20 +134,24 @@ io.on('connection', (client) => {
           }
         }
         // Et on le mélange
-        for (let i = 0; i < 1000; i++){
-          let location1 = Math.floor((Math.random() * game.startDeck.length));
-          let location2 = Math.floor((Math.random() * game.startDeck.length));
-          let tmp = game.startDeck[location1];
-          game.startDeck[location1] = game.startDeck[location2];
-          game.startDeck[location2] = tmp;
+        for(let i = game.startDeck.length - 1; i > 0; i--){
+          const j = Math.floor(Math.random() * i);
+          const temp = game.startDeck[i];
+          game.startDeck[i] = game.startDeck[j];
+          game.startDeck[j] = temp;
         }
-      }
-      game.save((err) => {
-        if (err) return console.error(err);
-        io.emit('update-game', game);
-        client.emit('current-player', currentPlayer);
-        console.log('[!]#'+game.ident+' updated and sent');
-      });
+
+        const choice = getChoice(game);
+        if(choice.value === 'king') startSortByKingTeam(io, game);
+
+      } else {
+       game.save((err) => {
+         if (err) return console.error(err);
+         io.emit('update-game', game);
+         client.emit('current-player', currentPlayer);
+         console.log('[!]#' + ident + ' updated and sent');
+       });
+     }
     });
   });
 });
@@ -152,3 +159,42 @@ io.on('connection', (client) => {
 http.listen(port, () => {
   console.log('listening on *:' + port);
 });
+
+
+function mostRecurring(arr){
+  return arr.sort((a,b) =>
+    arr.filter(v => v===a).length
+    - arr.filter(v => v===b).length
+  ).pop();
+}
+
+function getChoice(game){
+  const choices = [game.player1.choice, game.player2.choice, game.player3.choice, game.player4.choice].filter( (el) => { return el !== ""; });
+  const choice = mostRecurring(choices);
+  return ( choice === 'king')? {value: 'king', title: 'Tirage des rois'} : {value: 'mate', title: 'Choix de l\'équipier'};
+}
+
+function startSortByKingTeam(io, game){
+  console.log('[!]#'+game.ident+' starting sort by King team');
+  let cmpt = 1;
+  game.startDeck.forEach(card => {
+    setTimeout(function() {
+    if(cmpt === 1){
+      game.player1.deck.push(card);
+    } else if(cmpt === 2){
+      game.player2.deck.push(card);
+    } else if(cmpt === 3){
+      game.player3.deck.push(card);
+    } else if(cmpt === 4){
+      game.player4.deck.push(card);
+    }
+    game.startDeck = game.startDeck.filter((value) => value !== card );
+    cmpt += 1;
+    if(cmpt === 5) cmpt = 1;
+    game.save((err) => {
+      if (err) return console.error(err);
+      io.emit('update-game', game);
+    });
+    }, 5000);
+  });
+}

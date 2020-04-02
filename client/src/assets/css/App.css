@@ -282,6 +282,76 @@ a.back div:hover{
 .box.contree.play #choices .button.choice:hover{
   background-color: #c9034e;
 }
+.box.contree.play #king_scene table{
+  width: 100%;
+}
+.box.contree.play #king_scene table .player{
+  text-align: center;
+  box-shadow: 0 5px 15px 0 rgba(62, 57, 107, 0.2);
+  padding: 10px 15px;
+  margin: auto;
+  border-radius: 8px;
+  background-color: #3F3F3F;
+  color: #FFF;
+  font-weight: bold;
+  font-size: 20px;
+  width: 80%;
+}
+.box.contree.play #king_scene table .player p:first-of-type{
+  font-weight: initial;
+  font-size: 13px;
+  margin-bottom: 0;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  background-color: #c9034e;
+  border-radius: 15px;
+}
+.box.contree.play #king_scene table .player p:nth-child(2){
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+.box.contree.play #king_scene table .main{
+  width: 40%;
+  height: 300px;
+}
+
+
+/* CARTES */
+.card{
+  height: 200px;
+  width: 150px;
+  border-radius: 5px;
+  background-color: #FFFFFF;
+  border: solid 2px rgba(0,0,0,0.2);
+  padding: 6px 10px;
+  position: relative;
+  margin: 0 auto;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 50%;
+}
+.card.pique{
+  background-image: url("../img/pique.png");
+}
+.card.coeur{
+  background-image: url("../img/coeur.png");
+}
+.card.trefle{
+  background-image: url("../img/trefle.png");
+}
+.card.carreau{
+  background-image: url("../img/carreau.png");
+}
+.card .bottomValue{
+  position: absolute;
+  bottom: 10px;
+  text-align: right;
+  width: 124px;
+}
+.card .topValue, .card .bottomValue{
+font-weight: bold;
+  font-size: 19px;
+}
 
 
 @media (max-width: 992px){

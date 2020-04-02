@@ -9,22 +9,26 @@ class Game {
   player1 = {
     username: '',
     IP: '',
-    choice: ''
+    choice: '',
+    deck: []
   };
   player2 = {
     username: '',
     IP: '',
-    choice: ''
+    choice: '',
+    deck: []
   };
   player3 = {
     username: '',
     IP: '',
-    choice: ''
+    choice: '',
+    deck: []
   };
   player4 = {
     username: '',
     IP: '',
-    choice: ''
+    choice: '',
+    deck: []
   };
   team = {
     T1P1: '',

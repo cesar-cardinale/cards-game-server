@@ -237,23 +237,26 @@ class ContreePlay extends React.Component {
     document.querySelector('.logo img').setAttribute("src", logoWhite);
   }
   handleLiveGame(game){
-    this.setState((state) => ({game: Object.assign(state.game, game)}) );
-    if(this.state.game.ident !== this.state.ident) this.props.history.replace('/Contree');
+    if(game.ident === this.state.ident) {
+      this.setState((state) => ({game: Object.assign(state.game, game)}));
+    }
+    if (this.state.game.ident !== this.state.ident) this.props.history.replace('/Contree');
   }
   handleCurrentPlayer(player){
+    console.log(player);
     this.setState((state, props) => ({ currentPlayer: player }));
     this.checkIfFull();
     if(this.state.currentPlayer === undefined) this.props.history.replace('/Contree/Join/'+this.state.game.ident);
   }
   checkIfFull(){
     if(this.state.game.player1.username && this.state.game.player2.username && this.state.game.player3.username && this.state.game.player4.username && !this.state.game.isTeamSet){
-      document.querySelector('#wait h2').textContent = 'Choix des équipes';
-      if(!this.state.currentPlayer.choice)  document.querySelector('#choice').style.display = 'block';
+      if(document.querySelector('#wait h2')) document.querySelector('#wait h2').textContent = 'Choix des équipes';
+      if(!this.state.currentPlayer.choice && document.querySelector('#choice'))  document.querySelector('#choice').style.display = 'block';
     }
   }
   getMate(place){
     if(this.state.currentPlayer !== null && this.state.currentPlayer !== undefined && place === 'me'){
-      return( this.state.currentPlayer );
+      return( this.player(this.state.currentPlayer.username) );
     }
     if(this.state.currentPlayer !== null && this.state.currentPlayer !== undefined){
       let selectedUser;
@@ -276,11 +279,11 @@ class ContreePlay extends React.Component {
         return this.player(selectedUser);
       }
       if(myTeam !== 2 && (place === 'first' || place === 'second') ){
-        if(this.state.game.T2P1 && this.state.game.T2P1 !== username && place === 'first') return this.player(this.state.game.T2P1);
-        if(this.state.game.T2P2 && this.state.game.T2P2 !== username && place === 'second') return this.player(this.state.game.T2P2);
+        if(this.state.game.team.T2P1 && this.state.game.team.T2P1 !== username && place === 'first') return this.player(this.state.game.team.T2P1);
+        if(this.state.game.team.T2P2 && this.state.game.team.T2P2 !== username && place === 'second') return this.player(this.state.game.team.T2P2);
       } else if(myTeam !== 1 && (place === 'first' || place === 'second') ){
-        if(this.state.game.T1P1 && this.state.game.T1P1 !== username && place === 'first') return this.player(this.state.game.T1P1);
-        if(this.state.game.T1P2 && this.state.game.T1P2 !== username && place === 'second') return this.player(this.state.game.T1P2);
+        if(this.state.game.team.T1P1 && this.state.game.team.T1P1 !== username && place === 'first') return this.player(this.state.game.team.T1P1);
+        if(this.state.game.team.T1P2 && this.state.game.team.T1P2 !== username && place === 'second') return this.player(this.state.game.team.T1P2);
       }
     }
     return( {username: "", IP: null, choice: null} );
@@ -314,11 +317,11 @@ class ContreePlay extends React.Component {
       const adv2 = this.getMate('second');
       let choices = null;
       let title = "En attente de tous les joueurs ...";
-      if(!me.choice ) {
+      if(!me.choice && mate.IP && adv1.IP && adv2.IP) {
         choices = <div id="choices"><ChoiceButton classTitle="first" event={this.chooseKing} text="Tirer les rois"/><ChoiceButton classTitle="" event={this.chooseMate} text="Choisir son équipier"/></div>;
         title = "Choix d'attribution des équipes";
       }
-      if(!me.choice) {
+      if(!me.choice || !mate.choice || !adv1.choice || !adv2.choice) {
         return (
           <div id="wait">
             <h2>{title}</h2>
@@ -354,8 +357,8 @@ class ContreePlay extends React.Component {
       }
   }
   choiceView(){
-    //if(this.state.game.player1.choice && this.state.game.player2.choice && this.state.game.player3.choice && this.state.game.player4.choice && !this.game.isTeamSet){
-    const choice = this.state.game.getChoice();
+    //if(this.state.game.player1.choice && this.state.game.player2.choice && this.state.game.player3.choice && this.state.game.player4.choice && !this.state.game.isTeamSet){
+    const choice = {value: 'king', title: 'king'}; //this.state.game.getChoice();
     const me = this.getMate('me');
     const mate = this.getMate('mate');
     const adv1 = this.getMate('first');
@@ -369,33 +372,53 @@ class ContreePlay extends React.Component {
         {scene}
       </div>
     );
-    //} else return();
+    //} else return '';
   }
 
   choiceKingScene(me, mate, adv1, adv2){
     return (
-    <div className="players">
-      <div className="player">
-        <div className="avatar"><Avatar username={me.username}/></div>
-        <p>Joueur 1 (moi)</p>
-        {me.username}
+      <div id="king_scene">
+        <table>
+          <tbody>
+          <tr>
+            <td>
+              <div className="player">
+                <p>Joueur 1</p>
+                <p>{me.username}</p>
+              </div>
+              {(me.deck)? <Card card={me.deck[me.deck.length]} /> : '' }
+            </td>
+            <td />
+            <td>
+              <div className="player">
+                <p>Joueur 2</p>
+                <p>{adv1.username}</p>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td />
+            <td className="main"><Card card={this.state.game.startDeck[0]} /></td>
+            <td />
+          </tr>
+          <tr>
+            <td>
+              <div className="player">
+                <p>Équipe 2</p>
+                <p>{adv2.username}</p>
+              </div>
+            </td>
+            <td />
+            <td>
+              <div className="player">
+                <p>Équipe 1</p>
+                <p>{mate.username}</p>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
       </div>
-      <div className="player">
-        <div className="avatar"><Avatar username={mate.username}/></div>
-        <p>Joueur 2</p>
-        {mate.username}
-      </div>
-      <div className="player">
-        <div className="avatar"><Avatar username={adv1.username}/></div>
-        <p>Joueur 3</p>
-        {adv1.username}
-      </div>
-      <div className="player">
-        <div className="avatar"><Avatar username={adv2.username}/></div>
-        <p>Joueur 4</p>
-        {adv2.username}
-      </div>
-    </div>
     );
   }
   render()  {
@@ -441,6 +464,8 @@ const BackButton = ({ link }) => <a href={link} className="back"><div><i classNa
 const InputShareLink = ({ link }) => <div className="shareInput">Inviter <i className="fas fa-share-square" /> <input type="text" value={`http://cards-game-server.herokuapp.com${link}`} disabled/></div>;
 
 const Avatar = ({username}) => (username)? <img alt={`Avatar de ${username}`} src={`https://avatars.dicebear.com/v2/avataaars/${username}.svg?options[mouth][]=twinkle&options[eyes][]=squint&options[background]=%23FFFFFF`} /> : <img className="load" alt="En attente" src={load} />;
+
+const Card = ({card}) => <div className={`card ${card.suit}`} ><div className="topValue">{card.value}</div><div className="bottomValue">{card.value}</div></div>;
 
 /**
  * @return {null}

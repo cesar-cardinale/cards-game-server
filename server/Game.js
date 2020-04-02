@@ -7,22 +7,38 @@ const gameSchema = new mongoose.Schema({
   player1: {
     username: String,
     IP: String,
-    choice: String
+    choice: String,
+    deck: [{
+      value: String,
+      suit: String
+    }]
   },
   player2: {
     username: String,
     IP: String,
-    choice: String
+    choice: String,
+    deck: [{
+      value: String,
+      suit: String
+    }]
   },
   player3: {
     username: String,
     IP: String,
-    choice: String
+    choice: String,
+    deck: [{
+      value: String,
+      suit: String
+    }]
   },
   player4: {
     username: String,
     IP: String,
-    choice: String
+    choice: String,
+    deck: [{
+      value: String,
+      suit: String
+    }]
   },
   team: {
       T1P1: String,
