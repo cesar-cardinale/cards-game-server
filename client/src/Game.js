@@ -33,6 +33,7 @@ class Game {
     T2P2: ''
   };
   isTeamSet = false;
+  startDeck = null;
 
   constructor(ident, isPrivate, maxPoints) {
     this.ident = ident;
@@ -56,13 +57,16 @@ class Game {
     socket.emit('current-player', this.ident);
     socket.on('current-player', (player) => cb(player) );
   }
-  setChoice(cb, choice, username){
+  setChoice(cb, cc, choice, username){
     socket.emit('set-choice', this.ident, username, choice);
     socket.on('update-game', (game) => cb(Object.assign(new Game(), game)));
+    socket.on('current-player', (player) => cc(player) );
   }
 
   getChoice(){
-    return (this.mostRecurring([this.player1.choice, this.player2.choice, this.player3.choice, this.player4.choice]) === 'king')? 'Tirage des rois' : 'Choix de l\'équipier';
+    const choices = [this.player1.choice, this.player2.choice, this.player3.choice, this.player4.choice].filter( (el) => { return el !== ""; });
+    const choice = this.mostRecurring(choices);
+    return ( choice === 'king')? {value: 'king', title: 'Tirage des rois'} : {value: 'mate', title: 'Choix de l\'équipier'};
   }
 
   mostRecurring(arr){

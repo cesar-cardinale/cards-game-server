@@ -299,12 +299,12 @@ class ContreePlay extends React.Component {
   }
 
   chooseKing(){
-    this.state.game.setChoice(this.handleLiveGame, 'king', this.state.currentPlayer.username);
-    document.querySelector('#choice').remove();
+    this.state.game.setChoice(this.handleLiveGame, this.handleCurrentPlayer, 'king', this.state.currentPlayer.username);
+    document.querySelector('#choices').remove();
   }
   chooseMate(){
-    this.state.game.setChoice(this.handleLiveGame, 'mate', this.state.currentPlayer.username);
-    document.querySelector('#choice').remove();
+    this.state.game.setChoice(this.handleLiveGame, this.handleCurrentPlayer, 'mate', this.state.currentPlayer.username);
+    document.querySelector('#choices').remove();
   }
   watingView(){
     if( this.state.game.isTeamSet) return '';
@@ -314,49 +314,88 @@ class ContreePlay extends React.Component {
       const adv2 = this.getMate('second');
       let choices = null;
       let title = "En attente de tous les joueurs ...";
-      if(!me.choice && mate.IP && adv1.IP && adv2.IP) {
-        choices = <div id="choice"><ChoiceButton classTitle="first" event={this.chooseKing} text="Tirer les rois"/><ChoiceButton classTitle="" event={this.chooseMate} text="Choisir son équipier"/></div>;
+      if(!me.choice ) {
+        choices = <div id="choices"><ChoiceButton classTitle="first" event={this.chooseKing} text="Tirer les rois"/><ChoiceButton classTitle="" event={this.chooseMate} text="Choisir son équipier"/></div>;
         title = "Choix d'attribution des équipes";
       }
-      return (
-         <div id="wait">
-          <h2>{title}</h2>
-          <div className="players">
-            <div className="player">
-              <div className="avatar"><Avatar username={me.username}/></div>
-              <p>Joueur 1 (moi)</p>
-              {me.username}
-              <ChoiceFlag user={me}/>
+      if(!me.choice) {
+        return (
+          <div id="wait">
+            <h2>{title}</h2>
+            <div className="players">
+              <div className="player">
+                <div className="avatar"><Avatar username={me.username}/></div>
+                <p>Joueur 1 (moi)</p>
+                {me.username}
+                <ChoiceFlag user={me}/>
+              </div>
+              <div className="player">
+                <div className="avatar"><Avatar username={mate.username}/></div>
+                <p>Joueur 2</p>
+                {mate.username}
+                <ChoiceFlag user={mate}/>
+              </div>
+              <div className="player">
+                <div className="avatar"><Avatar username={adv1.username}/></div>
+                <p>Joueur 3</p>
+                {adv1.username}
+                <ChoiceFlag user={adv1}/>
+              </div>
+              <div className="player">
+                <div className="avatar"><Avatar username={adv2.username}/></div>
+                <p>Joueur 4</p>
+                {adv2.username}
+                <ChoiceFlag user={adv2}/>
+              </div>
             </div>
-            <div className="player">
-              <div className="avatar"><Avatar username={mate.username}/></div>
-              <p>Joueur 2</p>
-              {mate.username}
-              <ChoiceFlag user={mate}/>
-            </div>
-            <div className="player">
-              <div className="avatar"><Avatar username={adv1.username}/></div>
-              <p>Joueur 3</p>
-              {adv1.username}
-              <ChoiceFlag user={adv1}/>
-            </div>
-            <div className="player">
-              <div className="avatar"><Avatar username={adv2.username}/></div>
-              <p>Joueur 4</p>
-              {adv2.username}
-              <ChoiceFlag user={adv2}/>
-            </div>
+            {choices}
           </div>
-          {choices}
-        </div>
-      );
+        );
+      }
   }
   choiceView(){
-    if(this.state.game.player1.choice && this.state.game.player2.choice && this.state.game.player3.choice && this.state.game.player4.choice && !this.game.isTeamSet)
+    //if(this.state.game.player1.choice && this.state.game.player2.choice && this.state.game.player3.choice && this.state.game.player4.choice && !this.game.isTeamSet){
+    const choice = this.state.game.getChoice();
+    const me = this.getMate('me');
+    const mate = this.getMate('mate');
+    const adv1 = this.getMate('first');
+    const adv2 = this.getMate('second');
+    let scene;
+    if(choice.value === 'king') scene = this.choiceKingScene(me, mate, adv1, adv2);
+    if(choice.value === 'mate') scene = null;
     return(
       <div id="choice">
-        <h2>{this.state.game.getChoice()}</h2>
+        <h2>{choice.title}</h2>
+        {scene}
       </div>
+    );
+    //} else return();
+  }
+
+  choiceKingScene(me, mate, adv1, adv2){
+    return (
+    <div className="players">
+      <div className="player">
+        <div className="avatar"><Avatar username={me.username}/></div>
+        <p>Joueur 1 (moi)</p>
+        {me.username}
+      </div>
+      <div className="player">
+        <div className="avatar"><Avatar username={mate.username}/></div>
+        <p>Joueur 2</p>
+        {mate.username}
+      </div>
+      <div className="player">
+        <div className="avatar"><Avatar username={adv1.username}/></div>
+        <p>Joueur 3</p>
+        {adv1.username}
+      </div>
+      <div className="player">
+        <div className="avatar"><Avatar username={adv2.username}/></div>
+        <p>Joueur 4</p>
+        {adv2.username}
+      </div>
+    </div>
     );
   }
   render()  {

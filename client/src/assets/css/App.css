@@ -267,20 +267,19 @@ a.back div:hover{
   width: fit-content;
   margin: 5px auto 0px;
 }
-.box.contree.play #choice{
+.box.contree.play #choices{
   width: 100%;
-  display: none;
 }
-.box.contree.play #choice .button.choice{
+.box.contree.play #choices .button.choice{
   background-color: #D80351;
   width: 49.5%;
   margin: 0;
   display: inline-block;
 }
-.box.contree.play #choice .button.choice.first{
+.box.contree.play #choices .button.choice.first{
   margin-right: 1%;
 }
-.box.contree.play #choice .button.choice:hover{
+.box.contree.play #choices .button.choice:hover{
   background-color: #c9034e;
 }
 

@@ -7,30 +7,34 @@ const gameSchema = new mongoose.Schema({
   player1: {
     username: String,
     IP: String,
-    choice: String,
+    choice: String
   },
   player2: {
     username: String,
     IP: String,
-    choice: String,
+    choice: String
   },
   player3: {
     username: String,
     IP: String,
-    choice: String,
+    choice: String
   },
   player4: {
     username: String,
     IP: String,
-    choice: String,
+    choice: String
   },
   team: {
       T1P1: String,
       T1P2: String,
       T2P1: String,
-      T2P2: String,
+      T2P2: String
     },
   isTeamSet: Boolean,
+  startDeck: [{
+    value: String,
+    suit: String
+  }]
 });
 
 module.exports = mongoose.model('Game', gameSchema);
