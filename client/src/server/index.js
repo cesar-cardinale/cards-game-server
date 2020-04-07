@@ -1,5 +1,7 @@
 const express = require('express');
 const app = express();
+const index = require("./routes/index");
+app.use(index);
 const server = require('http').createServer(app);
 const path = require('path');
 const io = require('socket.io')(server);
@@ -13,7 +15,7 @@ mongoose.connect(uri, {useUnifiedTopology: true, useNewUrlParser: true }).catch(
 
 app.use(express.static(path.join(__dirname, '../../build')));
 
-console.log('LINK TOO BLANK :', __dirname);
+console.log('LINK TO BLANK :', __dirname);
 
 app.get('/', (req, res, next) => res.sendFile(__dirname + '/index.html'));
 
