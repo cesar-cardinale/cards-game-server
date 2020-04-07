@@ -3,22 +3,17 @@ const app = express();
 const server = require('http').createServer(app);
 const path = require('path');
 const io = require('socket.io')(server);
-
-const uri = "mongodb+srv://cesar:cards2020@cluster0-931bs.mongodb.net/test?retryWrites=true&w=majority";
 const port = process.env.PORT || 5000;
 
 const Game = require('./Game');
 
 const mongoose = require('mongoose');
-
-mongoose.connect(uri, {
-  useUnifiedTopology: true,
-  useNewUrlParser: true,
-});
+const uri = "mongodb+srv://cesar:cards2020@cluster0-931bs.mongodb.net/test?retryWrites=true&w=majority";
+mongoose.connect(uri, {useUnifiedTopology: true, useNewUrlParser: true }).catch(error => console.log(error));
 
 app.use(express.static(path.join(__dirname, '../../build')));
 
-app.get('/', (req, res, next) => res.sendFile(__dirname + './index.html'));
+app.get('/', (req, res, next) => res.sendFile(__dirname + '/index.html'));
 
 
 const suits = ["coeur", "pique", "trefle", "carreau"];

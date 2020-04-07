@@ -3,7 +3,20 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import {BrowserRouter, Route} from "react-router-dom";
+import Menu from './Menu';
+import {ContreeMenu, ContreeStart, ContreeUsername, ContreePlay} from './Contree';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+const routing = (
+  <BrowserRouter>
+      <Route path="/" exact component={Menu}/>
+      <Route path="/Contree" exact component={ContreeMenu}/>
+      <Route path="/Contree/Start" exact component={ContreeStart}/>
+      <Route path="/Contree/Join/:ident" exact component={ContreeUsername}/>
+      <Route path="/Contree/Play/:ident" exact component={ContreePlay}/>
+  </BrowserRouter>
+)
+
+ReactDOM.render(routing, document.getElementById('root'));
 
 serviceWorker.unregister();
