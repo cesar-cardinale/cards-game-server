@@ -1,8 +1,8 @@
 const express = require('express');
 const app = express();
-const http = require('http').Server(app);
+const server = require('http').createServer(app);
 const path = require('path');
-const io = require('socket.io')(http);
+const io = require('socket.io')(server);
 
 const uri = "mongodb://127.0.0.1:27017/test"; //"mongodb+srv://cesar:cards2020@cluster0-931bs.mongodb.net/test?retryWrites=true&w=majority";
 const port = process.env.PORT || 5000;
@@ -15,6 +15,10 @@ mongoose.connect(uri, {
   useUnifiedTopology: true,
   useNewUrlParser: true,
 });
+
+app.use(express.static(path.join(__dirname, '../../build')));
+
+app.get('/', (req, res, next) => res.sendFile(__dirname + './index.html'));
 
 
 const suits = ["coeur", "pique", "trefle", "carreau"];
@@ -50,13 +54,13 @@ io.on('connection', (client) => {
       if (err) return console.error(err);
 
       let currentPlayer = null;
-      if(game.player1.username && game.player1.IP === clientIp){
+      if(game.player1 && game.player1.IP === clientIp){
         currentPlayer = game.player1;
-      } else if(game.player2.username && game.player2.IP === clientIp){
+      } else if(game.player2 && game.player2.IP === clientIp){
         currentPlayer = game.player2;
-      } else if(game.player3.username && game.player3.IP === clientIp){
+      } else if(game.player3 && game.player3.IP === clientIp){
         currentPlayer = game.player3;
-      } else if(game.player4.username && game.player4.IP === clientIp){
+      } else if(game.player4 && game.player4.IP === clientIp){
         currentPlayer = game.player4;
       }
       console.log('[!]#'+ident,'Current user asked //', (currentPlayer)? currentPlayer.username : currentPlayer );
@@ -156,7 +160,7 @@ io.on('connection', (client) => {
   });
 });
 
-http.listen(port, () => {
+server.listen(port, () => {
   console.log('listening on *:' + port);
 });
 

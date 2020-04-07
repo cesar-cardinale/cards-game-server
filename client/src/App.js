@@ -357,7 +357,7 @@ class ContreePlay extends React.Component {
       }
   }
   choiceView(){
-    //if(this.state.game.player1.choice && this.state.game.player2.choice && this.state.game.player3.choice && this.state.game.player4.choice && !this.state.game.isTeamSet){
+    if(this.state.game.player1.choice && this.state.game.player2.choice && this.state.game.player3.choice && this.state.game.player4.choice && !this.state.game.isTeamSet){
     const choice = {value: 'king', title: 'king'}; //this.state.game.getChoice();
     const me = this.getMate('me');
     const mate = this.getMate('mate');
@@ -372,7 +372,7 @@ class ContreePlay extends React.Component {
         {scene}
       </div>
     );
-    //} else return '';
+    } else return '';
   }
 
   choiceKingScene(me, mate, adv1, adv2){
