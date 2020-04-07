@@ -13,6 +13,8 @@ mongoose.connect(uri, {useUnifiedTopology: true, useNewUrlParser: true }).catch(
 
 app.use(express.static(path.join(__dirname, '../../build')));
 
+console.log('LINK TOO BLANK :', __dirname);
+
 app.get('/', (req, res, next) => res.sendFile(__dirname + '/index.html'));
 
 
